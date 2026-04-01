@@ -38,18 +38,21 @@ int send_line(int sock, const char *line) {
 int recv_line(int sock, char *buf, size_t size) {
     int i = 0;
     char c;
-    while (i < size - 1) {
-        if(recv(sock, &c, 1, 0) <= 0) {
+
+    while (i < (int)size - 1) {
+        int recv_len = recv(sock, &c, 1, 0);
+        if (recv_len <= 0) {
             buf[i] = '\0';
-            return -1; // Error or connection closed
+            return -1;
         }
         if (c == '\n') break;
         buf[i++] = c;
     }
+
     buf[i] = '\0';
     return i;
 }
 
 void send_command_list(int sock) {
-    send_line(sock, "COMMANDS: list, get <filename>, quit");
+    send_line(sock, "COMMANDS: list, get <filename>, load <filename>, quit");
 }
