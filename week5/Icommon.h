@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ernno.h>
+#include <errno.h>
 #include <stdarg.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -14,12 +14,12 @@
 #define PORT 5000
 #define BUF_SIZE 4096
 
-void error_handling(const char "message") {
-    fprintf(stderr, "[ERROR] %s : %s(%d)\n", message, strerror(errno), errno);
+void error_handling(const char *message) {
+    fprintf(stderr, "[ERROR] %s: %s(%d)\n", message, strerror(errno), errno);
     exit(EXIT_FAILURE);
 }
 
-void log(const char *format, ...) {
+void log_msg(const char *format, ...) {
     va_list args;
     fprintf(stdout, "[LOG] ");
     va_start(args, format);
@@ -35,18 +35,21 @@ int send_line(int sock, const char *line) {
     return send(sock, buf, len, 0);
 }
 
-int recv_line(int sock, char *buf, size_t size){
+int recv_line(int sock, char *buf, size_t size) {
     int i = 0;
     char c;
-    while(i<size -1) {
-        if(recv(sock, &c, 1, 0) <= 0){
+    while (i < size - 1) {
+        if(recv(sock, &c, 1, 0) <= 0) {
             buf[i] = '\0';
-            return -1; //Error or connection closed
+            return -1; // Error or connection closed
         }
-        if(c == '\n') break;
+        if (c == '\n') break;
+        buf[i++] = c;
     }
     buf[i] = '\0';
     return i;
 }
 
-//void()
+void send_command_list(int sock) {
+    send_line(sock, "COMMANDS: list, get <filename>, quit");
+}
