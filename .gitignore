@@ -1,0 +1,17 @@
+.vscode/
+*.o
+*.out
+*.exe
+*.d
+build/
+bin/
+
+# Rust
+target/
+# Cargo.lock  # 앱이면 주석 제거
+
+# temp
+*~
+*.swp
+*.log
+.DS_Store
