@@ -37,6 +37,9 @@ int main() {
         // 3. 클라이언트로부터 메시지 수신
         int n = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr *)&cliaddr, &len);
         buffer[n] = '\0';
+
+        
+
         printf("클라이언트 메시지: %s\n", buffer);
 
         // 4. 클라이언트에게 받은 메시지를 그대로 다시 전송 (에코)

@@ -14,7 +14,7 @@ int main() {
     int len, n;
     char buffer[BUFFER_SIZE];
 
-    // 1. 윈속 초기화 (윈도우 필수 단계)
+    // 1. 윈속 초기화 (윈도우 필수 단계) : (하는 이유?)
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
         printf("WSAStartup 실패\n");
         return 1;
