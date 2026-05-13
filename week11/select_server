@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <sys/select.h>
+
+//main 이전에 IO,Error가 각각 0,1,2 으로 열려있음
+int main() {
+    int server_socket = socket(PF_INET, SOCK_STREAM, 0); //소켓 3번
+    struct sockaddr_in server_address;
+    
+    memset(&server_address, 0, sizeof(server_address));
+    server_address.sin_family = AF_INET;
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_address.sin_port = htons(9090);
+
+    bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address));
+    listen(server_socket, 5);
+
+    fd_set master_fds, temp_fds;
+    FD_ZERO(&master_fds);
+    FD_SET(server_socket, &master_fds); // 서버 소켓 등록 //소켓이 있냐 없냐 (0,1)
+    int max_fd = server_socket; //fd값 중 가장 큰게 서버소켓(3번)
+
+    while (1) {
+        temp_fds = master_fds;
+        select(max_fd + 1, &temp_fds, 0, 0, 0); //select : 통신이 있냐 없냐 (0,1) //max까지 확인하기
+
+        for (int current_fd = 0; current_fd <= max_fd; current_fd++) {
+            if (FD_ISSET(current_fd, &temp_fds)) {
+                if (current_fd == server_socket) { 
+                    // 새로운 클라이언트 접속
+                    int client_socket = accept(server_socket, NULL, NULL);
+                    FD_SET(client_socket, &master_fds);
+                    if (max_fd < client_socket) max_fd = client_socket;
+                } else { 
+                    // 클라이언트로부터 메시지 수신
+                    char message_buffer[1024];
+                    int read_bytes = read(current_fd, message_buffer, 1024);
+                    
+                    if (read_bytes == 0) { 
+                        // 연결 종료
+                        FD_CLR(current_fd, &master_fds);
+                        close(current_fd);
+                    } else {
+                        // 다른 모든 클라이언트에게 메시지 전달 (브로드캐스트)
+                        for (int target_fd = 0; target_fd <= max_fd; target_fd++) {
+                            if (FD_ISSET(target_fd, &master_fds) && target_fd != server_socket && target_fd != current_fd) {
+                                write(target_fd, message_buffer, read_bytes);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
