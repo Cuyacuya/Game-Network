@@ -10,7 +10,7 @@ struct Packet {
     public int PlayerId;
     public float X, Y;
     public int TargetId;
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] //cs에 없는 타입 값 변경
     public string Username;
     [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
     public string Password;

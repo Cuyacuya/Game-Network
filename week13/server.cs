@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)] //전부다 영향을 줌 but class한테는 영향을 안 줌.
 struct Packet {
     public int Type;        // 1:로그인 2:로그아웃 3:이동 4:공격 5:아이템
     public int PlayerId;    // 서버가 로그인 응답으로 부여한 ID

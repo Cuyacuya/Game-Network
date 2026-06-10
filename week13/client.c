@@ -55,7 +55,7 @@ int main() {
     pthread_t t;
     pthread_create(&t, NULL, recv_loop, NULL);
 
-    usleep(500000);
+    usleep(500000); //0.5초
 
     // 이동 (UDP)
     send_udp(udp_fd, &addr, (Packet){.type = 3, .player_id = my_id, .x = 10.5f, .y = 20.3f});

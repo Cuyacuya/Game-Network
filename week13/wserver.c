@@ -31,7 +31,7 @@ typedef struct {
 } Packet;
 
 typedef struct {
-    OVERLAPPED overlapped;
+    OVERLAPPED overlapped; //iocp 식별용
     WSABUF wsabuf;
     char buffer[sizeof(Packet)];
     int op_type;

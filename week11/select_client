@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <arpa/inet.h>
-#include <sys/select.h>
+#include <sys/selsect.h>
 
 int main() {
     int client_socket = socket(PF_INET, SOCK_STREAM, 0);
